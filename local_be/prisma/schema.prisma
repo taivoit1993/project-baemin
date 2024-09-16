@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt     @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userRoles UserRole[]
+  Order     Order[]
+}
+
+model Role {
+  id        BigInt     @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userRoles UserRole[]
+}
+
+model UserRole {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt
+  roleId    BigInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id])
+}
+
+
+model Store {
+  id        BigInt    @id @default(autoincrement())
+  name      String
+  address   String
+  phone     String
+  email     String
+  website   String?
+  openTime  DateTime
+  closeTime DateTime
+  images    String[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Product   Product[]
+}
+
+model Category {
+  id          BigInt    @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  description String
+  image       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Product     Product[]
+}
+
+enum ProductStatus {
+  PUBLISHED
+  DRAFT
+  ARCHIVED
+}
+
+model Product {
+  id           BigInt        @id @default(autoincrement())
+  name         String
+  description  String
+  price        Float
+  specialPrice Float?
+  stock        Int
+  status       ProductStatus @default(DRAFT)
+  images       String[]
+  storeId      BigInt
+  store        Store         @relation(fields: [storeId], references: [id])
+  categoryId   BigInt
+  category     Category      @relation(fields: [categoryId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  OrderItem    OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPING
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id        BigInt      @id @default(autoincrement())
+  userId    BigInt
+  user      User        @relation(fields: [userId], references: [id])
+  total     Float
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  OrderItem OrderItem[]
+}
+
+model OrderItem {
+  id           BigInt   @id @default(autoincrement())
+  orderId      BigInt
+  order        Order    @relation(fields: [orderId], references: [id])
+  productId    BigInt
+  product      Product  @relation(fields: [productId], references: [id])
+  quantity     Int
+  price        Float
+  specialPrice Float?
+  total        Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
