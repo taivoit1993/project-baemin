@@ -1,8 +1,6 @@
 "use client";
 import {
-  ClockCircleOutlined,
   ClockCircleTwoTone,
-  DollarOutlined,
   DollarTwoTone,
   DoubleRightOutlined,
   LikeFilled,
@@ -13,11 +11,22 @@ import {
 } from "@ant-design/icons";
 import { Input } from "antd";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "@/app/lib/axios.interceptor";
 
-export default function Home() {
+export default function Index({ params }: { params: { id: string } }) {
   const [isActive, setIsActive] = useState(false);
+  const [store, setStore] = useState({} as any);
 
+  useEffect(() => {
+    getStoreDetail(params.id as string);
+  }, []);
+
+  const getStoreDetail = async (storeId: string) => {
+    await api.get(`http://localhost:8000/store/${storeId}`).then((res) => {
+      setStore(res.data.data);
+    });
+  };
   const handleMouseDown = () => {
     setIsActive(true);
   };
@@ -34,7 +43,7 @@ export default function Home() {
             <Image
               layout="fill"
               objectFit="cover"
-              src={"/food/ga1.jpg"}
+              src={store?.images?.shift() || "/food/ga1.jpg"}
               alt="Ga"
             ></Image>
           </div>
@@ -46,7 +55,7 @@ export default function Home() {
               <DoubleRightOutlined className="text-[10px]" />{" "}
               <a href="">TP.HCM</a>{" "}
               <DoubleRightOutlined className="text-[10px]" />{" "}
-              <a href="">Gà Rán Jollibee - Nguyễn Văn Cừ</a>{" "}
+              <a href="">{store.name}</a>{" "}
             </span>
             <div className="flex flex-row text-[11px] justify-start items-center mt-3">
               <div className="bg-beamin text-white p-1 mr-2 cursor-pointer tracking-wider flex gap-1">
@@ -60,12 +69,8 @@ export default function Home() {
                 </a>
               </span>
             </div>
-            <div className="text-[22px] font-bold mt-2">
-              Gà Rán Jollibee - Nguyễn Văn Cừ
-            </div>
-            <div className="text-[13px] mt-1">
-              356 Trần Hưng Đạo, Phường 2, Quận 5, TP.Hồ Chí Minh
-            </div>
+            <div className="text-[22px] font-bold mt-2">{store.name}</div>
+            <div className="text-[13px] mt-1">{store.address}</div>
             <div className="flex flex-row text-[14px] gap-2 justify-start items-center">
               <ol className="flex flex-row text-[#FFC107] gap-1">
                 <li>
