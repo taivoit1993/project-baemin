@@ -215,7 +215,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="w-[30%] bg-white"></div>
+          <div className="w-[30%] bg-white"> </div>
         </div>
       </div>
     </div>
