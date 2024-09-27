@@ -6,7 +6,11 @@ import { BaseService } from 'src/common/restApi/base.service';
 import { Product } from '@prisma/client';
 
 @Injectable()
-export class ProductsService extends BaseService<Product, CreateProductDto, UpdateProductDto> {
+export class ProductsService extends BaseService<
+  Product,
+  CreateProductDto,
+  UpdateProductDto
+> {
   constructor(protected readonly prisma: PrismaService) {
     super(prisma, 'Product');
   }

@@ -42,7 +42,8 @@ export class ProductsController {
       skip: (+page || 1 - 1) * (+limit || 1),
       take: +limit || undefined,
       where: {
-        specialPrice: is_sale?.toString() === 'true' ? { not: null } : undefined,
+        specialPrice:
+          is_sale?.toString() === 'true' ? { not: null } : undefined,
         name: { contains: search || undefined },
       },
     });

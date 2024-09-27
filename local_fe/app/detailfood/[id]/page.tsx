@@ -20,7 +20,7 @@ export default function Index({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     getStoreDetail(params.id as string);
-  }, []);
+  }, [params.id]);
 
   const getStoreDetail = async (storeId: string) => {
     await api.get(`http://localhost:8000/store/${storeId}`).then((res) => {

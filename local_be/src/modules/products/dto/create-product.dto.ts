@@ -17,7 +17,7 @@ export class CreateProductDto {
   @ApiProperty()
   @IsNumber()
   stock: number;
-    
+
   @ApiProperty()
   @IsNumber()
   @IsOptional()
