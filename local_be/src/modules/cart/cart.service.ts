@@ -4,6 +4,7 @@ import { UpdateCartDto } from './dto/update-cart.dto';
 import { BaseService } from 'src/common/restApi/base.service';
 import { Cart } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { groupBy, values } from 'lodash';
 
 @Injectable()
 export class CartService extends BaseService<
@@ -43,13 +44,21 @@ export class CartService extends BaseService<
         userId,
       },
       include: {
-        product: true,
+        product: {
+          include: {
+            store: true,
+          },
+        },
       },
     });
     const product = carts.map((cart) => ({
       ...cart.product,
       quantity: cart.quantity,
     }));
-    return product;
+    return values(
+      groupBy(product, (item) => {
+        return item.store.id.toString();
+      }),
+    );
   }
 }

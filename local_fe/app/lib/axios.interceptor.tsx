@@ -1,3 +1,4 @@
+import useAuthStore from "@/app/state/auth.store";
 import { notification } from "antd";
 import axios from "axios";
 
@@ -9,7 +10,11 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Add authorization token or modify request if needed
-    console.log("Request sent");
+    const { token } = useAuthStore.getState() as { token: string }; // Get the token from Zustand store
+    console.log(token);
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`; // Attach token to the Authorization header
+    }
     return config;
   },
   (error) => {
@@ -22,7 +27,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // Handle successful response
-    console.log("Response received:", response);
+    console.log(response);
     return response;
   },
   (error) => {
@@ -38,7 +43,7 @@ api.interceptors.response.use(
       // Show error messages, handle specific status codes, etc.
       if (error.response.status === 401) {
         // Unauthorized access (e.g., redirect to login)
-        //   window.location.href = '/login';
+        // window.location.href = "/login";
       }
     } else if (error.request) {
       console.error("Error request:", error.request);
