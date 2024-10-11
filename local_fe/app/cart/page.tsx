@@ -15,53 +15,8 @@ export default function Home() {
       setDetail(res.data.data);
     });
   };
-  console.log(JSON.stringify(details, null, 2));
-  //   const detail: any = [
-  //     {
-  //       name: "Chicken Gang",
-  //       quandoitac: true,
-  //       items: [
-  //         {
-  //           namefood: "Gà rán",
-  //           img: "/images/Ga.png",
-  //           description: "Chiên bột",
-  //           price: 280000,
-  //           quantity: 2,
-  //           totalprice: 280000,
-  //         },
-  //         {
-  //           namefood: "Gà rán",
-  //           img: "/images/Ga.png",
-  //           description: "Chiên bột",
-  //           price: 280000,
-  //           quantity: 2,
-  //           totalprice: 280000,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       name: "Chicken Gang",
-  //       quandoitac: true,
-  //       items: [
-  //         {
-  //           namefood: "Gà rán",
-  //           img: "/images/Ga.png",
-  //           description: "Chiên bột",
-  //           price: 280000,
-  //           quantity: 2,
-  //           totalprice: 280000,
-  //         },
-  //         {
-  //           namefood: "Gà rán",
-  //           img: "/images/Ga.png",
-  //           description: "Chiên bột",
-  //           price: 280000,
-  //           quantity: 2,
-  //           totalprice: 280000,
-  //         },
-  //       ],
-  //     },
-  //   ];
+
+
   return (
     <>
       <div className="flex flex-row w-full h-20 bg-white ">
@@ -106,12 +61,7 @@ export default function Home() {
             </span>
           </div>
         </div>
-        {/* <DetailsCart Details={details}></DetailsCart> */}
-        {details.map((items: any, index: number) => (
-          <>
-            <h1 key={index}>{items?.shift()?.name}</h1>
-          </>
-        ))}
+        <DetailsCart Details={details}></DetailsCart>
         <div className=" flex flex-row fixed bottom-0  w-[90.6%]  mr-16  h-16 bg-white items-center  ">
           <div className="flex flex-row gap-2 w-1/2 h-full items-center ml-10">
             <div className="cursor-pointer hover:text-red-600 ">Hủy</div>
@@ -120,7 +70,9 @@ export default function Home() {
           </div>
           <div className="flex flex-row gap-2 w-1/2 h-full items-center justify-end pr-2">
             <div className=""> Tổng thanh toán (0 Sản phẩm):</div>
-            <div className="text-red-600">₫0 </div>
+            <div className="text-red-600">₫{details.reduce((total, item: any) => {
+              return total + (item.price || item.specialPrice) * item.quantity;
+            }, 0)}</div>
             <div>
               <Button
                 href="/checkout"

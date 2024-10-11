@@ -4,9 +4,6 @@ import React, { use, useEffect } from "react";
 
 export default function DetailsCart({ Details }: { Details: any[] }) {
  
-  useEffect(() => {
-    console.log(JSON.stringify(Details,null,2));
-  },[Details])
   return (
     <>
       {Details.map((items, index) => (
@@ -19,10 +16,10 @@ export default function DetailsCart({ Details }: { Details: any[] }) {
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded   dark:ring-offset-gray-800 "
             />
             <span className="text-base font-normal">
-              {items?.shift()?.name || ""}
+              {items[0]?.store?.name || ""}
             </span>
             <div className=" bg-beamin p-1 rounded-md">
-              {items.shift() && (
+              {items[0] && (
                 <span className="text-sm font-normal text-white">
                   Quán đối tác
                 </span>
@@ -34,7 +31,7 @@ export default function DetailsCart({ Details }: { Details: any[] }) {
               <div
                 key={index}
                 className={
-                  index === items.items.length - 1
+                  index === item.length - 1
                     ? "w-full grid grid-cols-12"
                     : "w-full grid grid-cols-12 border-b border-solid border-x-gray-300"
                 }
@@ -50,19 +47,19 @@ export default function DetailsCart({ Details }: { Details: any[] }) {
                     <Image
                       layout="fill"
                       objectFit="cover"
-                      src={item.img}
+                      src={item.images[0]}
                       alt={""}
                     />
                   </div>
                   <div className="flex flex-col gap-3">
-                    <span className="text-base ">{item.namefood}</span>
+                    <span className="text-base ">{item.name}</span>
                     <span className="text-sm text-gray-600">
-                      {item.description}
+                      {""}
                     </span>
                   </div>
                 </div>
                 <div className="col-span-2 flex items-center justify-center flex-row gap-3">
-                  ₫{item.price}
+                  ₫{item.specialPrice || item.price}
                 </div>
                 <div className="col-span-2 flex items-center justify-center flex-row gap-3">
                   <input
@@ -70,12 +67,13 @@ export default function DetailsCart({ Details }: { Details: any[] }) {
                     id="quantity"
                     className="w-16 text-center border border-gray-300 rounded"
                     defaultValue={item.quantity}
+                    name={item.quantity}
                     min="1"
                     max="100"
                   />
                 </div>
                 <div className="col-span-2 flex items-center justify-center flex-row gap-3">
-                  ₫{item.totalprice}
+                  ₫{(item.specialPrice || item.price) * item.quantity}
                 </div>
                 <div className="col-span-2 flex items-center justify-center flex-row gap-3">
                   <span className=" hover:text-red-600 cursor-pointer">
