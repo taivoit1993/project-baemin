@@ -5,14 +5,11 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { BaseController } from 'src/common/restApi/base.controller';
-import { $Enums, Product } from '@prisma/client';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @Controller('products')
@@ -45,7 +42,8 @@ export class ProductsController {
       skip: (+page || 1 - 1) * (+limit || 1),
       take: +limit || undefined,
       where: {
-        specialPrice: is_sale?.toString() === 'true' ? { not: null } : undefined,
+        specialPrice:
+          is_sale?.toString() === 'true' ? { not: null } : undefined,
         name: { contains: search || undefined },
       },
     });

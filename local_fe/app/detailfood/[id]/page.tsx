@@ -1,8 +1,6 @@
 "use client";
 import {
-  ClockCircleOutlined,
   ClockCircleTwoTone,
-  DollarOutlined,
   DollarTwoTone,
   DoubleRightOutlined,
   LikeFilled,
@@ -13,17 +11,38 @@ import {
 } from "@ant-design/icons";
 import { Input } from "antd";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import api from "@/app/lib/axios.interceptor";
+import useAuthStore from "@/app/state/auth.store";
 
-export default function Home() {
+export default function Index({ params }: { params: { id: string } }) {
   const [isActive, setIsActive] = useState(false);
+  const [store, setStore] = useState({} as any);
+  useEffect(() => {
+    getStoreDetail(params.id as string);
+  }, [params.id]);
 
+  const getStoreDetail = async (storeId: string) => {
+    await api.get(`http://localhost:8000/store/${storeId}`).then((res) => {
+      setStore(res.data.data);
+    });
+  };
   const handleMouseDown = () => {
     setIsActive(true);
   };
 
   const handleMouseUp = () => {
     setIsActive(false);
+  };
+
+  const handleAddToCart = async (product: any) => {
+    await api
+      .post("http://localhost:8000/carts", {
+        productId: product.id,
+      })
+      .then((res) => {
+        console.log(res);
+      });
   };
 
   return (
@@ -34,7 +53,7 @@ export default function Home() {
             <Image
               layout="fill"
               objectFit="cover"
-              src={"/food/ga1.jpg"}
+              src={store?.images?.shift() || "/food/ga1.jpg"}
               alt="Ga"
             ></Image>
           </div>
@@ -46,7 +65,7 @@ export default function Home() {
               <DoubleRightOutlined className="text-[10px]" />{" "}
               <a href="">TP.HCM</a>{" "}
               <DoubleRightOutlined className="text-[10px]" />{" "}
-              <a href="">Gà Rán Jollibee - Nguyễn Văn Cừ</a>{" "}
+              <a href="">{store.name}</a>{" "}
             </span>
             <div className="flex flex-row text-[11px] justify-start items-center mt-3">
               <div className="bg-beamin text-white p-1 mr-2 cursor-pointer tracking-wider flex gap-1">
@@ -60,12 +79,8 @@ export default function Home() {
                 </a>
               </span>
             </div>
-            <div className="text-[22px] font-bold mt-2">
-              Gà Rán Jollibee - Nguyễn Văn Cừ
-            </div>
-            <div className="text-[13px] mt-1">
-              356 Trần Hưng Đạo, Phường 2, Quận 5, TP.Hồ Chí Minh
-            </div>
+            <div className="text-[22px] font-bold mt-2">{store.name}</div>
+            <div className="text-[13px] mt-1">{store.address}</div>
             <div className="flex flex-row text-[14px] gap-2 justify-start items-center">
               <ol className="flex flex-row text-[#FFC107] gap-1">
                 <li>
@@ -153,69 +168,44 @@ export default function Home() {
             </div>
             <div className="flex flex-col w-full pl-1 gap-3">
               <div className="font-medium">MÓN ĐANG GIẢM</div>
-              <div className="flex flex-col w-full gap-43 border-b">
-                <div className="flex flex-row ">
-                  <div className="w-[15%] relative h-16">
-                    <Image
-                      layout="fill"
-                      objectFit="cover"
-                      src={"/images/Ga.png"}
-                      alt="s"
-                    ></Image>
-                  </div>
-                  <div className="w-[60%] flex flex-col gap-1 px-2">
-                    <span className="font-bold text-[#464646] ">
-                      Mua 2 Tặng 2 Gà Rán{" "}
-                    </span>
-                    <span className="text-wrap text-sm text-[#464646] ">
-                      Bao gồm: 4 Miếng Gà (Cay/Không Cay), 2 Nước Vừa. Đã bao
-                      gồm 2x Tương Cà, 1x Tương Ớt Ngọt, 1x Tương Ớt Tỏi
-                    </span>
-                  </div>
-                  <div className="w-[15%] flex justify-center items-center">
-                    <span className="text-[#0288d1] font-bold text-base">
-                      118.000đ
-                    </span>
-                  </div>
-                  <div className="w-[10%] flex justify-center items-center">
-                    <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 ">
-                      <PlusOutlined />
+
+              <div className="flex flex-col w-full gap-43 border-b ">
+                {store.Product?.map((product: any, index: number) => (
+                  <div key={index} className="flex flex-row mb-3">
+                    <div className="w-[15%] relative h-16">
+                      <Image
+                        layout="fill"
+                        objectFit="cover"
+                        src={product.images?.shift() || "/food/ga1.jpg"}
+                        alt="s"
+                      ></Image>
+                    </div>
+                    <div className="w-[60%] flex flex-col gap-1 px-2">
+                      <span className="font-bold text-[#464646] ">
+                        {product.name}
+                      </span>
+                      <span className="text-wrap text-sm text-[#464646] ">
+                        {product.description}
+                      </span>
+                    </div>
+                    <div className="w-[15%] flex justify-center items-center">
+                      <span className="text-[#0288d1] font-bold text-base">
+                        {product.price} đ
+                      </span>
+                    </div>
+                    <div className="w-[10%] flex justify-center items-center">
+                      <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 ">
+                        <PlusOutlined
+                          onClick={() => handleAddToCart(product)}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-row ">
-                  <div className="w-[15%] relative h-16">
-                    <Image
-                      layout="fill"
-                      objectFit="cover"
-                      src={"/images/Ga.png"}
-                      alt="s"
-                    ></Image>
-                  </div>
-                  <div className="w-[60%] flex flex-col gap-1 px-2">
-                    <span className="font-bold text-[#464646] ">
-                      Mua 2 Tặng 2 Gà Rán{" "}
-                    </span>
-                    <span className="text-wrap text-sm text-[#464646] ">
-                      Bao gồm: 4 Miếng Gà (Cay/Không Cay), 2 Nước Vừa. Đã bao
-                      gồm 2x Tương Cà, 1x Tương Ớt Ngọt, 1x Tương Ớt Tỏi
-                    </span>
-                  </div>
-                  <div className="w-[15%] flex justify-center items-center">
-                    <span className="text-[#0288d1] font-bold text-base">
-                      118.000đ
-                    </span>
-                  </div>
-                  <div className="w-[10%] flex justify-center items-center">
-                    <div className="h-6 w-6 rounded-md flex justify-center items-center bg-beamin text-white font-bold cursor-pointer hover:brightness-110 ">
-                      <PlusOutlined />
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="w-[30%] bg-white"> </div>
+          <div className="w-[30%] bg-white"></div>
         </div>
       </div>
     </div>
