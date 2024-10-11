@@ -55,7 +55,7 @@ export default function ScrollBar({
                 key={key}
                 className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
               >
-                <Link href="/detailfood">
+                <Link href={`/detailfood/${item.storeId}`}>
                   <Image
                     className="rounded-t-lg"
                     src={item.images[0]}
@@ -65,7 +65,7 @@ export default function ScrollBar({
                   />
                 </Link>
                 <div className="p-3">
-                  <Link href="/detailfood">
+                  <Link href={`/detailfood/${item.storeId}`}>
                     <h5 className="font-semibold tracking-tight text-gray-900 dark:text-white">
                       {item.name}
                     </h5>

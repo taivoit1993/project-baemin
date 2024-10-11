@@ -12,6 +12,6 @@ export class CategoryController extends BaseController<Category, CreateCategoryD
   constructor(private readonly categoryService: CategoryService) {
     super(categoryService);
   }
-
+  
   
 }

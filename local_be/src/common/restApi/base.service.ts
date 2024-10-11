@@ -18,20 +18,20 @@ export class BaseService<T, CreateDTO, UpdateDTO> {
     let totalCount: number | undefined;
     let totalPages: number | undefined;
     const data = await this.prisma[this.model].findMany({
-        skip,
-        take,
-        where,
-        orderBy,
-      });
+      skip,
+      take,
+      where,
+      orderBy,
+    });
     if (skip !== undefined && take !== undefined) {
-       totalCount = await this.prisma[this.model].count({ where });
-       totalPages = Math.ceil(totalCount / take);
+      totalCount = await this.prisma[this.model].count({ where });
+      totalPages = Math.ceil(totalCount / take);
     }
     return {
-        data,
-        totalCount,
-        totalPages,
-    }
+      data,
+      totalCount,
+      totalPages,
+    };
   }
 
   async findOne(where: object): Promise<T> {
@@ -42,10 +42,7 @@ export class BaseService<T, CreateDTO, UpdateDTO> {
     return await this.prisma[this.model].create({ data });
   }
 
-  async update(params: {
-    where: object;
-    data: UpdateDTO;
-  }): Promise<T> {
+  async update(params: { where: object; data: UpdateDTO }): Promise<T> {
     const { where, data } = params;
     return await this.prisma[this.model].update({ where, data });
   }

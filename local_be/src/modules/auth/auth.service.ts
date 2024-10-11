@@ -4,10 +4,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
-
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
   async create(createAuthDto: CreateAuthDto) {
     const password = await bcrypt.hash(createAuthDto.password, 10);
     const user = await this.prisma.user.create({
@@ -32,7 +34,10 @@ export class AuthService {
       throw new Error('Invalid password');
     }
     const roles = user.userRoles.map((userRole) => userRole.role.name);
-    const token = this.jwtService.sign({ userId: user.id.toString(), email: user.email, roles }, { secret: process.env.JWT_SECRET });
+    const token = this.jwtService.sign(
+      { userId: user.id.toString(), email: user.email, roles },
+      { secret: process.env.JWT_SECRET },
+    );
     const { password, ...result } = user;
     return { ...result, token };
   }
